@@ -1,3 +1,7 @@
+## Script to query the humhum MongoDB based ROR api hosting the data for the MSBIOSCREEN.
+# Example of query:
+# apimdbc -JTS '{"query":{"epicid":54},"fields":["_id","edss_numeric","sql_visitid"]}'
+
 #!/bin/sh
 
 STATIC_OPTS="-H 'Content-Type:application/json'"
@@ -96,7 +100,7 @@ do
              JSON_parsing_post='| python -mjson.tool'
              ;;
          T)
-             TIMING_arg='-s -w "Total Time: %{time_total} \n" -o /dev/null'
+             TIMING_arg='-s -w "Total Time: %{time_total} \n"'
              ;;
          V)
              VERBOSE=1
