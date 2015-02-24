@@ -32,7 +32,7 @@ USAGE:
  
 *** Choose max one amongst the following:
  -G [field filtering request] ONLY if you want to filter fields when displaying records. Default is display without filtering.
-   ---> [field filtering request] ~ 'fields:["field_1","field2"]'
+   ---> [field filtering request] ~ 'fields=["field_1","field2"]'
  -U [json] update the record
    ---> [json] ~ '{"epicid":3,"field1":new_value}'
  -S [json] Perform a search, with an optional filtering of result fields
