@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/UCSF-MSLAB/MSGB/master/Noriko_Nagelkerke/Nagelkerke_MSGB_Datasets.html Nagelkerke.html
+https://raw.githubusercontent.com/UCSF-MSLAB/BIOSCREEN/master/DB_plots_EDSS_Report.html
