@@ -1,4 +1,4 @@
-
+# Insert here the access token from your github account
 TOKEN='insertTokenHere'
 
 while read -r link file #|| [[ -n $line ]] #In order to read the last line if it has no trailing EOL
