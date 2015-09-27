@@ -14,13 +14,14 @@ JSON_parsing=
 JSON_parsing_post=
 JSON_arg=
 TIMING_arg=
-ID=
+SOURCE_ID=
+EXT_ID=
 EX_VAR=
 
 usage()
 {
 cat << EOF
-Interaction Utility for the MSBioscreen mdb - v1.2
+Interaction Utility for the MSBioscreen mdb - v1.3
 
 USAGE:
  -h display this help
@@ -42,9 +43,9 @@ USAGE:
    ---> [json] ~ '{"field1":new_value,"field2":new_value}'
    
 *** Optional arguments
- -i [idkey] provide the id key of one ressource                            
+ -i [source_id:external_identifier] provide the source/external identifiers of one ressource                            
  -c [collection] specify the collection (default is "visits")
- -u [url] change the url (defaut is the api)
+ -u [url] change the url (defaut is the uat api)
  -v [version] change the version of the api (default is v1)
  -t [token_string] change the authentication token (default is for Antoine Lizee) 
   
@@ -67,18 +68,19 @@ do
              API_VER=$OPTARG
              ;;
          i)
-             ID=$OPTARG
+             SOURCE_ID=sources/${OPTARG%:*}/
+             EXT_ID=${OPTARG#*:}
              ;;    
          G)
-	     API_METH='GET -G'
-	     JSON_arg="-d '$OPTARG'"
+             echo -e "-G option non supported anymore. Field filtering is supported only within a search.\nUse the -S option instead with the filed filtering."
+             exit 1
 	     ;;
 	 U)
              API_METH='PUT'
              JSON_arg="-d '$OPTARG'"
              ;;
          S)
-             ID='search'
+             EXT_ID='search'
              API_METH='POST'
              JSON_arg="-d '$OPTARG'"
              ;;
@@ -117,20 +119,13 @@ done
 
 if [ $EX_VAR ]
 then
-	echo 'Fetching example ------------'
-	JSON_arg="-d '{\"query\":{\"epicid\":{\"\$lt\":15}},\"fields\":\"_id\"}'"
-	ID=$(bash -c "curl -X POST -s $JSON_arg $STATIC_OPTS -H '$API_AUTH' $API_URL$API_VER/$API_COLLECTION/search | python -mjson.tool | grep -m 1 _id | cut -d ':' -f 2 | cut -d '\"' -f 2")
-	bash -c "curl -X GET -s $TIMING_arg $STATIC_OPTS -H '$API_AUTH' $API_URL$API_VER/$API_COLLECTION/$ID | python -mjson.tool"
-	exit 1
+	echo 'Fetching example ids ------------'
+	JSON_arg="-d '{\"query\":{\"epicid\":{\"\$lt\":3}},\"fields\":[\"source_id\",\"external_identifier\"]}'"
+        EXT_ID='search'
+        API_METH='POST'
 fi
 
-if [ -z $ID ] && [ "$API_METH" = 'GET' ]
-then
-	echo 'You are asking to get a complete collection, please provide an ID (-i [ID]) or a filtering request (-G []). See -h for more help.'
-	exit 1
-fi
-
-cmd_string="curl -X $API_METH $MUTE_arg $TIMING_arg $JSON_arg $STATIC_OPTS -H '$API_AUTH' $JSON_parsing $API_URL$API_VER/$API_COLLECTION/$ID $JSON_parsing_post"
+cmd_string="curl -X $API_METH $MUTE_arg $TIMING_arg $JSON_arg $STATIC_OPTS -H '$API_AUTH' $JSON_parsing $API_URL$API_VER/${SOURCE_ID}${API_COLLECTION}/$EXT_ID $JSON_parsing_post"
 if [ $VERBOSE ]
 then
 	echo "--- CURL COMMAND:"
@@ -138,8 +133,13 @@ then
 	echo "------------------"
 fi
 bash -c "$cmd_string"
-#eval "$cmd_string"
-#$($cmd_string)
 
+if [ $EX_VAR ]
+then
+	echo 'You can now get an example record by giving us the source_id and external id of your choice'
+	read -p 'Source id >>' SID
+	read -p 'External id >>' EID
+	
+fi
 
 
