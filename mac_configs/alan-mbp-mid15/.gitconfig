@@ -1,0 +1,71 @@
+[user]
+	name = antoine.lizee
+	email = antoine.lizee@gmail.com
+[push]
+	default = current
+[core]
+	editor = /usr/bin/vim
+	excludesfile = /Users/alizee/.gitignore_global
+
+[pull]
+	ff = only
+## Sublimerge part beloww ##################
+
+[merge]
+tool = sublimerge
+
+[mergetool "sublimerge"]
+cmd = subl -n --wait \"$REMOTE\" \"$BASE\" \"$LOCAL\" \"$MERGED\" --command \"sublimerge_diff_views\"
+trustExitCode = false
+
+[diff]
+tool = sublimerge
+
+[difftool "sublimerge"]
+cmd = subl -n --wait \"$REMOTE\" \"$LOCAL\" --command \"sublimerge_diff_views {\\\"left_read_only\\\": true, \\\"right_read_only\\\": true}\"
+
+
+# FROM http://blog.kfish.org/2010/04/git-lola.html
+[alias]
+	lolp = log --graph --pretty=format:\"%C(yellow)%h%Creset%C(cyan)%C(bold)%d%Creset %C(cyan)(%cr)%Creset %C(green)%ce%Creset %s\"
+        lol = log --graph --decorate --pretty=oneline --abbrev-commit
+        lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	lolap = log --graph --decorate --pretty=oneline --abbrev-commit --exclude='*prod*' --all
+	lolan = log --graph --decorate --pretty=oneline --abbrev-commit --all --name-status
+[color]
+        branch = auto
+        diff = auto
+        interactive = auto
+        status = auto
+	log = always
+###
+
+## From https://gist.github.com/mathiasverraes/1337397
+[alias]
+    st = status
+    ci = commit
+    br = branch
+    co = checkout
+    df = diff
+    ds = diff --staged
+    lg = log -p
+    ls = ls-files
+    unstage = reset HEAD
+    # Show files ignored by git:
+    ign = ls-files -o -i --exclude-standard
+    # Show latest branches with no merge.
+    bunmerged = branch --no-merged acceptance --sort=committerdate
+###
+
+
+[filter "lfs"]
+	smudge = git-lfs smudge %f
+	required = true
+	clean = git-lfs clean %f
+## Source Tree install?
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
